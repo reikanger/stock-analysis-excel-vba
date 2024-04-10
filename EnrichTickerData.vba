@@ -21,8 +21,6 @@ Sub EnrichTickerData()
             Range("K1").Value = "Percent Change"
             Range("L1").Value = "Total Stock Volume"
 
-        ' First seeing this new stock ticker, doesn't equal last ticker
-        ElseIf Cells(row, "A").Value <> Cells(row - 1, "A").Value Then
             ' grab the initial values here
             ticker = Cells(row + 1, "A").Value
             beginPrice = Cells(row + 1, "C")
