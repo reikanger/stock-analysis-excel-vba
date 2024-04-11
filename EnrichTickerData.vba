@@ -27,8 +27,8 @@ Sub EnrichTickerData()
         Set tbl = ws.ListObjects(tblName)
         
         ' format numbers of new table
-        Columns("J").NumberFormat = "0.00"
-        Columns("K").NumberFormat = "%0.00"
+        ws.Columns("J").NumberFormat = "0.00"
+        ws.Columns("K").NumberFormat = "%0.00"
         
         lastRow = ws.UsedRange.Rows(ws.UsedRange.Rows.Count).Row
         For row = 1 To lastRow
