@@ -92,29 +92,69 @@ Sub EnrichTickerData()
         ws.ListObjects.Add(xlSrcRange, tblRange, , xlYes).Name = greatTblName
         Set greatTbl = ws.ListObjects(greatTblName)
 
+        ' set column headers
+        Set col = greatTbl.ListColumns("Column1")
+        col.Name = " "
+
+        Set col = greatTbl.ListColumns("Column2")
+        col.Name = "Ticker"
+
+        Set col = greatTbl.ListColumns("Column3")
+        col.Name = "Value"
+
         ' check every row in ticker details table to bring out the greatest
         Set tbl = ws.ListObjects("TickerSummary")
         lastRow = tbl.DataBodyRange.Rows.Count + tbl.HeaderRowRange.Row - 1
 
         ' set initial greatest values
-        greatestYearlyChange = 0
-        greatestPercentChange = 0
+        greatestPercentIncrease = 0
+        greatestPercentDecrease = 0
         greatestTotalVolume = 0
+        Dim greatestPercentIncrease_Ticker as String
+        Dim greatestPercentDecrease_Ticker as String
+        Dim greatestTotalVolume_Ticker as String
 
         For row = 2 To lastRow
-            ' check yearly change
-            If Abs(Cells(row, "J").Value) > greatestYearlyChange
-                greatestYearlyChange = Cells(row, "J").Value
+            ' check greatest increase
+            If Cells(row, "K").Value > greatestPercentIncrease Then
+                greatestPercentIncrease = Cells(row, "K").Value
+                greatestPercentIncrease_Ticker = Cells(row, "I").Value
             End If
 
-            ' check percent change
-            If Abs(Cells(row, "K").Value) > greatestYearlyChange
-                greatestYearlyChange = Cells(row, "K").Value
+            ' check greatest decrease
+            If Cells(row, "K").Value < greatestPercentDecrease Then
+                greatestPercentDecrease = Cells(row, "K").Value
+                greatestPercentDecrease_Ticker = Cells(row, "I").Value
             End If
 
             ' check total stock volume
-            If Abs(Cells(row, "L").Value) > greatestYearlyChange
-                greatestYearlyChange = Cells(row, "L").Value
+            If Cells(row, "L").Value > greatestTotalVolume Then
+                greatestTotalVolume = Cells(row, "L").Value
+                greatestTotalVolume_Ticker = Cells(row, "I").Value
             End If
+        Next row
+
+        ' write out greatest values to greatest table
+        Set newRow = greatTbl.ListRows.Add(AlwaysInsert:=True)
+        With newRow
+            .Range(1) = "Greatest % Increase"
+            .Range(2) = greatestPercentIncrease_Ticker
+            .Range(3) = greatestPercentIncrease
+        End With
+
+        Set newRow = greatTbl.ListRows.Add(AlwaysInsert:=True)
+        With newRow
+            .Range(1) = "Greatest % Decrease"
+            .Range(2) = greatestPercentDecrease_Ticker
+            .Range(3) = greatestPercentDecrease
+        End With
+
+        Set newRow = greatTbl.ListRows.Add(AlwaysInsert:=True)
+        With newRow
+            .Range(1) = "Greatest Total Volume"
+            .Range(2) = greatestTotalVolume_Ticker
+            .Range(3) = greatestTotalVolume
+        End With
+
     Next ws
 End Sub
