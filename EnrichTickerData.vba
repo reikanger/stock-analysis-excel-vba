@@ -84,33 +84,33 @@ Sub EnrichTickerData()
         Next row
 
         ' conditional formatting - Yearly Change
-        Dim colRange As Range
-        Set colRange = ws.Range("J:J")
-        With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
+        'Dim colRange As Range
+        'Set colRange = ws.Range("J:J")
+        'With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
             ' Format for values less than 0 (red)
-            .Interior.ColorIndex = xlAutomatic
-            .Color = vbRed
-        End With
+        '    .Interior.ColorIndex = xlAutomatic
+        '    .Color = vbRed
+        'End With
 
-        With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlGreater, Formula1:="0")
+        'With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlGreater, Formula1:="0")
             ' Format for values greater than 0 (green)
-            .Interior.ColorIndex = xlAutomatic
-            .Color = vbGreen
-        End With
+        '    .Interior.ColorIndex = xlAutomatic
+        '    .Color = vbGreen
+        'End With
 
         ' conditional formatting - Percent Change
-        Set colRange = ws.Range("J:J")
-        With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
+        'Set colRange = ws.Range("K:K")
+        'With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
             ' Format for values less than 0 (red)
-            .Interior.ColorIndex = xlAutomatic
-            .Color = vbRed
-        End With
+        '    .Interior.ColorIndex = xlAutomatic
+        '    .Color = vbRed
+        'End With
 
-        With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlGreater, Formula1:="0")
-            ' Format for values greater than 0 (green)
-            .Interior.ColorIndex = xlAutomatic
-            .Color = vbGreen
-        End With
+        'With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlGreater, Formula1:="0")
+        '    ' Format for values greater than 0 (green)
+        '    .Interior.ColorIndex = xlAutomatic
+        '    .Color = vbGreen
+        'End With
 
     Next ws
 End Sub
