@@ -1,6 +1,3 @@
-' TODO: run on every worksheet at once
-' TODO: conditional formatting
-
 Sub EnrichTickerData()
     Dim ws as worksheet
     Dim tblRange as Range
@@ -15,16 +12,21 @@ Sub EnrichTickerData()
     Dim yearlyChange As Double
     Dim percentChange As Double
     Dim totalvolume as Double
+    Dim col As ListColumn
+    Dim greatestYearlyChange as Double
+    Dim greatestPercentChange as Double
+    Dim greatestTotalVolume as Double
 
-    'Set ws = ThisWorkbook.Worksheets("2018")
+    ' loop each sheet
     For Each ws In ThisWorkbook.Worksheets
+        ' create output table for ticker details
         Set tblRange = ws.Range("I1:L1")
         tblName = "TickerSummary"
 
         ws.ListObjects.Add(xlSrcRange, tblRange, , xlYes).Name = tblName
-        'Set tbl = ThisWorkbook.Worksheets("2018").ListObjects(tblName)
         Set tbl = ws.ListObjects(tblName)
         
+        ' format numbers of new table
         Columns("J").NumberFormat = "0.00"
         Columns("K").NumberFormat = "%0.00"
         
@@ -32,18 +34,18 @@ Sub EnrichTickerData()
         For row = 1 To lastRow
             ' Headers - print them and grab initial values
             If row = 1 Then
-                Range("I1").Value = "Ticker"
-                Range("J1").Value = "Yearly Change"
-                Range("K1").Value = "Percent Change"
-                Range("L1").Value = "Total Stock Volume"
+                Set col = tbl.ListColumns("Column1")
+                col.Name = "Ticker"
+                Set col = tbl.ListColumns("Column2")
+                col.Name = "Yearly Change"
+                Set col = tbl.ListColumns("Column3")
+                col.Name = "Percent Change"
+                Set col = tbl.ListColumns("Column4")
+                col.Name = "Total Stock Volume"
 
                 ' grab the initial values here
-                'ticker = Cells(row + 1, "A").Value
                 beginPrice = Cells(row + 1, "C")
                 totalvolume = Cells(row + 1, "G")
-                
-                ' output the ticker symbol (since its new)
-                'Cells(row + 1, "I").Value = ticker
             
             ' Last entry of this ticker, do final calculations, doesn't equal next ticker
             ElseIf Cells(row, "A").Value <> Cells(row + 1, "A") Then
@@ -61,8 +63,6 @@ Sub EnrichTickerData()
                     ' total stock volume
                     totalvolume = totalvolume + Cells(row, "G").Value
                     Cells(row, "L").Value = totalvolume
-
-                    ' greatest increase, greatest decrease, and greatest total volume
 
                     ' write to output table
                     Set newRow = tbl.ListRows.Add(AlwaysInsert:=True)
@@ -83,34 +83,38 @@ Sub EnrichTickerData()
             End If
         Next row
 
-        ' conditional formatting - Yearly Change
-        'Dim colRange As Range
-        'Set colRange = ws.Range("J:J")
-        'With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
-            ' Format for values less than 0 (red)
-        '    .Interior.ColorIndex = xlAutomatic
-        '    .Color = vbRed
-        'End With
+        ' greatest increase, greatest decrease, and greatest total volume
 
-        'With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlGreater, Formula1:="0")
-            ' Format for values greater than 0 (green)
-        '    .Interior.ColorIndex = xlAutomatic
-        '    .Color = vbGreen
-        'End With
+        ' create output table for ticker details
+        Set tblRange = ws.Range("O1:Q1")
+        greatTblName = "GreatestSummary"
 
-        ' conditional formatting - Percent Change
-        'Set colRange = ws.Range("K:K")
-        'With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
-            ' Format for values less than 0 (red)
-        '    .Interior.ColorIndex = xlAutomatic
-        '    .Color = vbRed
-        'End With
+        ws.ListObjects.Add(xlSrcRange, tblRange, , xlYes).Name = greatTblName
+        Set greatTbl = ws.ListObjects(greatTblName)
 
-        'With colRange.FormatConditions.Add(Type:=xlCellValue, Operator:=xlGreater, Formula1:="0")
-        '    ' Format for values greater than 0 (green)
-        '    .Interior.ColorIndex = xlAutomatic
-        '    .Color = vbGreen
-        'End With
+        ' check every row in ticker details table to bring out the greatest
+        Set tbl = ws.ListObjects("TickerSummary")
+        lastRow = tbl.DataBodyRange.Rows.Count + tbl.HeaderRowRange.Row - 1
 
+        ' set initial greatest values
+        greatestYearlyChange = 0
+        greatestPercentChange = 0
+        greatestTotalVolume = 0
+
+        For row = 2 To lastRow
+            ' check yearly change
+            If Abs(Cells(row, "J").Value) > greatestYearlyChange
+                greatestYearlyChange = Cells(row, "J").Value
+            End If
+
+            ' check percent change
+            If Abs(Cells(row, "K").Value) > greatestYearlyChange
+                greatestYearlyChange = Cells(row, "K").Value
+            End If
+
+            ' check total stock volume
+            If Abs(Cells(row, "L").Value) > greatestYearlyChange
+                greatestYearlyChange = Cells(row, "L").Value
+            End If
     Next ws
 End Sub
