@@ -1,4 +1,4 @@
-# homework2
+# Stock Analysis with Excel and VBA
 VBA scripts used in Module 2 Challenge
 
 ## Contents of Repository
